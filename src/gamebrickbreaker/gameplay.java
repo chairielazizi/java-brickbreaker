@@ -2,6 +2,7 @@ package gamebrickbreaker;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -21,7 +22,7 @@ public class gameplay extends JPanel implements KeyListener, ActionListener {
     private int totalBricks = 21;
     
     private Timer time;
-    private int delay;
+    private int delay=1;
 
     private int playerX = 310;
     
@@ -95,6 +96,11 @@ public class gameplay extends JPanel implements KeyListener, ActionListener {
     public void actionPerformed(ActionEvent e) {
         time.start();
         if(play){
+            // to intersect with player
+            if(new Rectangle(ballposX,ballposY,20,20).intersects(new Rectangle(playerX,550,100,8))){
+                balldirY = -balldirY;
+            }
+            
             ballposX += balldirX;
             ballposY += balldirY;
             //left border
