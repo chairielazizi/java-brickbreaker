@@ -2,6 +2,7 @@ package gamebrickbreaker;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +32,11 @@ public class gameplay extends JPanel implements KeyListener, ActionListener {
     private int balldirX = -1;
     private int balldirY = -2;
     
+    // generate the blocks
+    private mapGenerator bricks;
+    
     public gameplay(){
+        bricks = new mapGenerator(3,7);
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -43,6 +48,9 @@ public class gameplay extends JPanel implements KeyListener, ActionListener {
         // background
         g.setColor(Color.black);
         g.fillRect(1, 1, 692, 592);
+        
+        // drawing the map blocks
+        bricks.draw((Graphics2D)g);
         
         // border
         g.setColor(Color.orange);
@@ -99,6 +107,40 @@ public class gameplay extends JPanel implements KeyListener, ActionListener {
             // to intersect with player
             if(new Rectangle(ballposX,ballposY,20,20).intersects(new Rectangle(playerX,550,100,8))){
                 balldirY = -balldirY;
+            }
+            
+            // intersect between ball and the bricks
+            A: for(int i=0;i<bricks.map.length;i++){
+                for (int j=0;j<bricks.map[0].length;j++){
+                    if(bricks.map[i][j] > 0){
+                        int brickX = j * bricks.brickWidth +80;
+                        int brickY = i * bricks.brickHeight +50;
+                        int brickWidth = bricks.brickWidth;
+                        int brickHeight = bricks.brickHeight;
+                        
+                        Rectangle rect = new Rectangle(brickX,brickY,brickWidth,brickHeight);
+                        Rectangle ballRect = new Rectangle(ballposX,ballposY,20,20);
+                        Rectangle brickRect = rect;
+                        
+                        if(ballRect.intersects(brickRect)){
+                            // call method from mapGenerator
+                            bricks.setBrickValue(0, i, j);
+                            totalBricks--;
+                            score += 5;
+                            
+                            // for left and right intersection
+                            if(ballposX + 19 <= brickRect.x || ballposX + 1 >= brickRect.x + brickRect.width){
+                                balldirX = -balldirX;
+                            }
+                            else{
+                                balldirY = -balldirY;
+                            }
+                            
+                            // break to outer loop
+                            break A;
+                        }
+                    }
+                }
             }
             
             ballposX += balldirX;

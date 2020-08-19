@@ -1,5 +1,6 @@
 package gamebrickbreaker;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
@@ -29,9 +30,21 @@ public class mapGenerator {
             for(int j=0;j<map[0].length;j++){
                 if(map[i][j] > 0){
                     g.setColor(Color.CYAN);
-                    g.fillRect(i * brickWidth, i * brickHeight +50, brickWidth, brickHeight);
+                    g.fillRect(j * brickWidth + 80, i * brickHeight +50, brickWidth, brickHeight);
+                    
+                    // create black border
+                    g.setStroke(new BasicStroke(3));
+                    g.setColor(Color.black);
+                    // draw the lines
+                    g.drawRect(j * brickWidth + 80, i * brickHeight +50, brickWidth, brickHeight);
+                    
                 }
             }
         }
+    }
+    
+    // create intersection between bricks and ball
+    public void setBrickValue(int value,int row,int column){
+        map[row][column] = value;
     }
 }
